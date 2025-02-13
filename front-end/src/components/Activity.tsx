@@ -9,6 +9,7 @@ import {
 import AddUserToFavorite from "@/graphql/mutations/activity/addUserToFavorite";
 import RemoveUserFromFavorite from "@/graphql/mutations/activity/removeUserFromFavorite";
 import { useAuth } from "@/hooks";
+import { useDate } from "@/hooks/useDate";
 import { useGlobalStyles } from "@/utils";
 import { useMutation } from "@apollo/client";
 import { Badge, Button, Card, Grid, Group, Image, Text } from "@mantine/core";
@@ -22,6 +23,7 @@ interface ActivityProps {
 export function Activity({ activity }: ActivityProps) {
   const { classes } = useGlobalStyles();
   const { user } = useAuth();
+  const { formatDate } = useDate();
 
   const [isFavorite, setIsFavorite] = useState(false);
 
@@ -85,6 +87,12 @@ export function Activity({ activity }: ActivityProps) {
         <Text size='sm' color='dimmed' className={classes.ellipsis}>
           {activity.description}
         </Text>
+
+        {user?.role === "admin" && (
+          <Text size='sm' color='dimmed'>
+            Créé le {formatDate(activity.createdAt)}
+          </Text>
+        )}
 
         <Link href={`/activities/${activity.id}`} className={classes.link}>
           <Button variant='light' color='blue' fullWidth mt='md' radius='md'>

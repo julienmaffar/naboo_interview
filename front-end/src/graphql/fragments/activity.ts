@@ -14,6 +14,7 @@ const ActivityFragment = gql`
     favorites {
       id
     }
+    createdAt
   }
   ${OwnerFragment}
 `;
