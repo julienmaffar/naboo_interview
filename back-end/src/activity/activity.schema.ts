@@ -35,6 +35,12 @@ export class Activity extends Document {
 
   @Field(() => Date, { nullable: true })
   createdAt!: Date;
+
+  @Field(() => [User], { nullable: true })
+  @Prop({
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  })
+  favorites?: User[];
 }
 
 export const ActivitySchema = SchemaFactory.createForClass(Activity);

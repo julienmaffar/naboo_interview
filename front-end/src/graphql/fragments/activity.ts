@@ -11,6 +11,9 @@ const ActivityFragment = gql`
     owner {
       ...Owner
     }
+    favorites {
+      id
+    }
   }
   ${OwnerFragment}
 `;

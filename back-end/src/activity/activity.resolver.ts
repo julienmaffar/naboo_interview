@@ -55,6 +55,14 @@ export class ActivityResolver {
     return this.activityService.findByUser(context.jwtPayload.id);
   }
 
+  @Query(() => [Activity])
+  @UseGuards(AuthGuard)
+  async getFavoritesActivitiesByUser(
+    @Context() context: ContextWithJWTPayload,
+  ): Promise<Activity[]> {
+    return this.activityService.findFavoritesByUser(context.jwtPayload.id);
+  }
+
   @Query(() => [String])
   async getCities(): Promise<string[]> {
     const cities = await this.activityService.findCities();
@@ -82,5 +90,31 @@ export class ActivityResolver {
     @Args('createActivityInput') createActivity: CreateActivityInput,
   ): Promise<Activity> {
     return this.activityService.create(context.jwtPayload.id, createActivity);
+  }
+
+  @Mutation(() => Activity)
+  @UseGuards(AuthGuard)
+  async addUserToFavorite(
+    @Context() context: ContextWithJWTPayload,
+    @Args('activityId') activityId: string,
+  ): Promise<Activity> {
+    await this.activityService.findOne(activityId);
+    return this.activityService.addToFavorite(
+      activityId,
+      context.jwtPayload.id,
+    );
+  }
+
+  @Mutation(() => Activity)
+  @UseGuards(AuthGuard)
+  async removeUserFromFavorite(
+    @Context() context: ContextWithJWTPayload,
+    @Args('activityId') activityId: string,
+  ): Promise<Activity> {
+    await this.activityService.findOne(activityId);
+    return this.activityService.removeFromFavorite(
+      activityId,
+      context.jwtPayload.id,
+    );
   }
 }

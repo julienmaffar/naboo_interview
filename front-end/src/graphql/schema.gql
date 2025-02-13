@@ -6,6 +6,7 @@ type Activity {
   city: String!
   createdAt: DateTime
   description: String!
+  favorites: [User!]
   id: ID!
   name: String!
   owner: User!
@@ -25,10 +26,12 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Mutation {
+  addUserToFavorite(activityId: String!): Activity!
   createActivity(createActivityInput: CreateActivityInput!): Activity!
   login(signInInput: SignInInput!): SignInDto!
   logout: Boolean!
   register(signUpInput: SignUpInput!): User!
+  removeUserFromFavorite(activityId: String!): Activity!
 }
 
 type Query {
@@ -37,6 +40,7 @@ type Query {
   getActivitiesByUser: [Activity!]!
   getActivity(id: String!): Activity!
   getCities: [String!]!
+  getFavoritesActivitiesByUser: [Activity!]!
   getLatestActivities: [Activity!]!
   getMe: User!
 }
