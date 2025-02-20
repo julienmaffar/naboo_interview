@@ -11,7 +11,7 @@ import { useAuth } from "@/hooks";
 import { Avatar, Flex, Grid, NativeSelect, Text } from "@mantine/core";
 import { GetServerSideProps } from "next";
 import Head from "next/head";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 interface ProfileProps {
   favoriteActivities: ActivityFragment[];
@@ -39,10 +39,12 @@ const Profile = (props: ProfileProps) => {
   const { user } = useAuth();
   const { favoriteActivities } = props;
 
+  const [innerFavoriteActivities, setInnerFavoriteActivities] =
+    useState(favoriteActivities);
   const [sortBy, setSortBy] = useState("id");
 
   const sortedActivities = useMemo(() => {
-    const sorted = [...favoriteActivities];
+    const sorted = [...innerFavoriteActivities];
     switch (sortBy) {
       case "name":
         return sorted.sort((a, b) => a.name.localeCompare(b.name));
@@ -51,7 +53,17 @@ const Profile = (props: ProfileProps) => {
       default:
         return sorted.sort((a, b) => a.id.localeCompare(b.id));
     }
-  }, [favoriteActivities, sortBy]);
+  }, [innerFavoriteActivities, sortBy]);
+
+  const handleClickFavorite = useCallback(
+    (id: string) => {
+      const activities = innerFavoriteActivities.filter(
+        (activity) => activity.id !== id
+      );
+      setInnerFavoriteActivities(activities);
+    },
+    [innerFavoriteActivities]
+  );
 
   return (
     <>
@@ -89,7 +101,11 @@ const Profile = (props: ProfileProps) => {
       <Grid>
         {sortedActivities.length > 0 ? (
           sortedActivities.map((activity) => (
-            <Activity activity={activity} key={activity.id} />
+            <Activity
+              activity={activity}
+              key={activity.id}
+              onClickFavorite={() => handleClickFavorite(activity.id)}
+            />
           ))
         ) : (
           <EmptyData />

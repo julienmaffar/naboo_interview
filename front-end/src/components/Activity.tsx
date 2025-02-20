@@ -18,9 +18,10 @@ import { useCallback, useEffect, useState } from "react";
 
 interface ActivityProps {
   activity: ActivityFragment;
+  onClickFavorite?: () => void;
 }
 
-export function Activity({ activity }: ActivityProps) {
+export function Activity({ activity, onClickFavorite }: ActivityProps) {
   const { classes } = useGlobalStyles();
   const { user } = useAuth();
   const { formatDate } = useDate();
@@ -52,7 +53,14 @@ export function Activity({ activity }: ActivityProps) {
       });
 
     setIsFavorite(!isFavorite);
-  }, [activity.id, addUserToFavorite, isFavorite, removeUserFromFavorite]);
+    if (onClickFavorite) onClickFavorite();
+  }, [
+    activity.id,
+    addUserToFavorite,
+    isFavorite,
+    onClickFavorite,
+    removeUserFromFavorite,
+  ]);
 
   useEffect(() => {
     setIsFavorite(!!activity.favorites?.find((_user) => _user.id === user?.id));

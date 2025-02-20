@@ -7,4 +7,9 @@ export const graphqlClient = new ApolloClient({
     credentials: "include",
   }),
   ssrMode: typeof window === "undefined",
+  defaultOptions: {
+    watchQuery: {
+      fetchPolicy: "cache-and-network",
+    },
+  },
 });
